@@ -1,0 +1,120 @@
+name: AsTeR host runner
+run-name: AsTeR generation ${{ inputs.generation }} · parent ${{ inputs.parent || 'initial' }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      chain:
+        description: Internal chain ID (leave empty for initial launch)
+        required: false
+        default: ""
+        type: string
+      generation:
+        description: Internal generation (use 1 for initial launch)
+        required: true
+        default: "1"
+        type: string
+      parent:
+        description: Internal predecessor run ID (leave empty for initial launch)
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+  actions: write
+  deployments: write
+
+jobs:
+  host:
+    if: ${{ vars.HOST_ENABLED == 'true' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    steps:
+      - name: Record runner start time
+        run: echo "HOST_STARTED_MS=$(date +%s%3N)" >> "$GITHUB_ENV"
+
+      - name: Validate connection settings
+        shell: bash
+        env:
+          SOURCE_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          TUNNEL_TOKEN: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}
+          PUBLIC_URL: ${{ vars.ASTER_PUBLIC_URL }}
+        run: |
+          set -euo pipefail
+          for key in SOURCE_TOKEN TUNNEL_TOKEN PUBLIC_URL; do
+            if [[ -z "${!key}" ]]; then
+              echo "::error::Missing required setting: $key"
+              exit 1
+            fi
+          done
+          if [[ "$PUBLIC_URL" != https://* ]]; then
+            echo "::error::ASTER_PUBLIC_URL must be HTTPS"
+            exit 1
+          fi
+
+      - name: Checkout public orchestration
+        uses: actions/checkout@v4
+        with:
+          path: infra
+          persist-credentials: false
+
+      - name: Checkout private AsTeR source
+        uses: actions/checkout@v4
+        with:
+          repository: mok9900/aster-ai
+          ref: feat/bounded-actions-relay-20261021
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          path: app
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Test and build private app
+        working-directory: app
+        run: |
+          npm ci
+          npm test
+          npm run build
+
+      - name: Install pinned cloudflared
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 3 --max-time 120 \
+            https://github.com/cloudflare/cloudflared/releases/download/2026.10.2/cloudflared-linux-amd64 \
+            --output "$RUNNER_TEMP/cloudflared"
+          echo '35fbdd2beb378436c7da377d7358cea8e33f9c94a6705d1d8036bf9b0d6d8005  '"$RUNNER_TEMP/cloudflared" | sha256sum --check --status
+          chmod 755 "$RUNNER_TEMP/cloudflared"
+
+      - name: Host AsTeR and hand over
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HOST_CHAIN: ${{ inputs.chain }}
+          HOST_GENERATION: ${{ inputs.generation }}
+          HOST_PARENT: ${{ inputs.parent }}
+          ASTER_PUBLIC_URL: ${{ vars.ASTER_PUBLIC_URL }}
+          CLOUDFLARED_BIN: ${{ runner.temp }}/cloudflared
+          CLOUDFLARE_TUNNEL_TOKEN: ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }}
+          GOOGLE_AI_API_KEY: ${{ secrets.GOOGLE_AI_API_KEY }}
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          ASTER_OWNER_UIDS: ${{ secrets.ASTER_OWNER_UIDS }}
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          FIREBASE_DATABASE_URL: ${{ vars.FIREBASE_DATABASE_URL }}
+          FIREBASE_API_KEY: ${{ vars.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN: ${{ vars.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
+          FIREBASE_STORAGE_BUCKET: ${{ vars.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_MESSAGING_SENDER_ID: ${{ vars.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_MEASUREMENT_ID: ${{ vars.FIREBASE_MEASUREMENT_ID }}
+          ASTER_MODEL_MI_LARGE: ${{ secrets.ASTER_MODEL_MI_LARGE }}
+          ASTER_MODEL_MI_PLUS: ${{ secrets.ASTER_MODEL_MI_PLUS }}
+          ASTER_MODEL_MI_AX: ${{ secrets.ASTER_MODEL_MI_AX }}
+          ASTER_MODEL_ATMIG: ${{ secrets.ASTER_MODEL_ATMIG }}
+          ASTER_MODEL_ATMIG_PLUS: ${{ secrets.ASTER_MODEL_ATMIG_PLUS }}
+        run: node infra/scripts/relay.mjs
