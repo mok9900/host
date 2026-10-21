@@ -1,5 +1,5 @@
 name: Verify private AsTeR source
-# Recheck account migration build before selecting rolling source
+# Recheck OWNER panel, long streaming output, and mathematical Markdown
 on:
   push:
     paths:
