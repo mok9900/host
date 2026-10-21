@@ -1,0 +1,28 @@
+name: AsTeR host watchdog
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: aster-watchdog
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    if: ${{ vars.HOST_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Recover only when no hosting runner is active
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/watchdog.mjs
