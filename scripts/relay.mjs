@@ -80,7 +80,7 @@ function attachSafeDiagnostics(child) {
       return;
     }
     let end;
-    while ((end = pending.indexOf("\\n")) >= 0) {
+    while ((end = pending.indexOf("\n")) >= 0) {
       const line = pending.slice(0, end);
       pending = pending.slice(end + 1);
       const safe = safeApplicationEvent(line);
