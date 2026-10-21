@@ -1,5 +1,5 @@
 name: Verify private AsTeR source
-# Recheck hybrid Gemini Google Search grounding, citations, usage, and search mode UI
+# Recheck Gemini search final integration, source display and continued-response cost cap
 on:
   push:
     paths:
