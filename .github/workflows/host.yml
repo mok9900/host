@@ -27,7 +27,7 @@ permissions:
 
 jobs:
   host:
-    if: ${{ vars.HOST_ENABLED == 'true' && github.ref == 'refs/heads/main' }}
+    if: ${{ vars.HOST_ENABLED == 'true' && github.ref == 'refs/heads/main' && github.run_attempt == 1 }}
     runs-on: ubuntu-24.04
     timeout-minutes: 355
     steps:
