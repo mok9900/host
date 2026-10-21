@@ -1,0 +1,30 @@
+name: Verify private AsTeR source
+on:
+  push:
+    paths:
+      - .github/workflows/verify-private.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify-private:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out private AsTeR application
+        uses: actions/checkout@v4
+        with:
+          repository: mok9900/aster-ai
+          ref: feat/bounded-actions-relay-20261021
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Verify private tests and production build
+        run: |
+          npm ci
+          npm test
+          npm run build
