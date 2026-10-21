@@ -25,3 +25,12 @@ test("existing chat stream/lock errors remain privacy-safe", () => {
   assert.equal(safeApplicationEvent("chat_lock_release_failed { type: 'Error' }"),
     "chat_lock_release_failed details=withheld");
 });
+
+test("provider response diagnostics reveal only status and public model alias", () => {
+  assert.equal(safeApplicationEvent('provider_http_failure {"model":"mi-ax","status":429}'),
+    "provider_http_failure model=mi-ax status=429");
+  assert.equal(safeApplicationEvent('provider_http_failure {"model":"private-model","status":401,"key":"sensitive"}'),
+    "provider_http_failure model=unknown status=401");
+  assert.equal(safeApplicationEvent('provider_http_failure {"model":"mi-ax","status":"secret"}'),
+    "provider_http_failure model=mi-ax status=0");
+});
