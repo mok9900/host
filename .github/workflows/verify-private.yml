@@ -5,7 +5,7 @@ on:
     paths:
       - .github/workflows/verify-private.yml
   workflow_dispatch:
-  # Recheck required service account fields and legacy account migration
+  # Recheck required service account fields, legacy migration and responsive signup
 permissions:
   contents: read
 jobs:
