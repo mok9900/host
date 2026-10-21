@@ -1,0 +1,38 @@
+name: Stop AsTeR hosting
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  stop:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Disable new runs and terminate queued/running hosts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh api --method PUT "repos/$REPO/actions/workflows/watchdog.yml/disable"
+          gh api --method PUT "repos/$REPO/actions/workflows/host.yml/disable"
+          for attempt in $(seq 1 30); do
+            active="$(gh api "repos/$REPO/actions/workflows/host.yml/runs?per_page=100" \
+              --jq '.workflow_runs[] | select(.status != "completed") | .id')"
+            if [[ -z "$active" ]]; then
+              echo "No active AsTeR host runner remains."
+              exit 0
+            fi
+            while IFS= read -r run; do
+              [[ "$run" =~ ^[0-9]+$ ]] || continue
+              gh api --method POST "repos/$REPO/actions/runs/$run/cancel" >/dev/null 2>&1 || :
+            done <<< "$active"
+            sleep 10
+          done
+          echo "::error::Host workflow disabled, but some jobs may still be stopping."
+          exit 1
