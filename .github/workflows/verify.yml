@@ -21,6 +21,7 @@ jobs:
         run: |
           node --check scripts/core.mjs
           node --check scripts/relay.mjs
+          node --check scripts/diagnostics.mjs
           node --check scripts/watchdog.mjs
       - name: Run handover logic tests
         run: node --test tests/*.test.mjs
