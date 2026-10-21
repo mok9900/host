@@ -1,5 +1,5 @@
 name: Verify private AsTeR source
-# Recheck OWNER panel, long streaming output, and mathematical Markdown
+# Recheck hybrid Gemini Google Search grounding, citations, usage, and search mode UI
 on:
   push:
     paths:
