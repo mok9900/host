@@ -50,7 +50,7 @@ The app checkout currently uses the existing private source branch `feat/bounded
 
 ## Stop
 
-Open **Actions → Stop AsTeR hosting → Run workflow**. This disables the runner workflow then cancels active/queued runner executions. To resume, re-enable **AsTeR host runner** on the Actions page and check `HOST_ENABLED`. For a durable stop, also set `HOST_ENABLED=false` in repository variables.
+Open **Actions → Stop AsTeR hosting → Run workflow**. This disables the runner workflow then cancels active/queued runner executions. To resume, re-enable **AsTeR host runner** **and** **AsTeR host watchdog** on the Actions page, then set `HOST_ENABLED=true`. For a durable stop, also set `HOST_ENABLED=false` in repository variables.
 
 ## Operational details
 
