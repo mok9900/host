@@ -26,6 +26,7 @@ let app;
 let tunnel;
 let deploymentId;
 let stopping = false;
+let startupStage = "bootstrap";
 process.once("SIGTERM", () => { stopping = true; });
 process.once("SIGINT", () => { stopping = true; });
 
@@ -149,7 +150,9 @@ async function verifyNoDuplicateGenesis() {
 
 async function main() {
   console.log("AsTeR host generation " + state.generation + " | chain " + state.chain);
+  startupStage = "check existing runners";
   await verifyNoDuplicateGenesis();
+  startupStage = "start application";
   app = spawn(process.execPath, ["--import", "tsx", "server/standalone.ts"], {
     cwd: "app",
     env: applicationEnv(),
@@ -158,6 +161,7 @@ async function main() {
   app.on("error", () => { stopping = true; });
   await waitUntilHealthy("http://127.0.0.1:8080/api/health", app, 120_000, "Node server");
   console.log("Application ready.");
+  startupStage = "start Cloudflare tunnel";
 
   tunnel = spawn(env.CLOUDFLARED_BIN || "/usr/local/bin/cloudflared",
     ["tunnel", "--no-autoupdate", "--metrics", "127.0.0.1:2000",
@@ -167,10 +171,13 @@ async function main() {
     });
   tunnel.on("error", () => { stopping = true; });
   await waitUntilHealthy("http://127.0.0.1:2000/ready", tunnel, 180_000, "Cloudflare tunnel");
+  startupStage = "check public HTTPS health";
   if (!(await healthy(origin + "/api/health"))) {
     throw new Error("Public HTTPS health endpoint is not responding.");
   }
+  startupStage = "publish runner readiness";
   await announceReady();
+  startupStage = "serve and rotate";
   console.log("Public host healthy: " + origin);
 
   let lastHeartbeat = Date.now();
@@ -236,7 +243,7 @@ try {
   await main();
 } catch (error) {
   // Never print environment values, API response bodies, or the credentials.
-  console.error("AsTeR host stopped on startup/control/health error.");
+  console.error("AsTeR host stopped during stage: " + startupStage + ". Credential values are not logged.");
   process.exitCode = 1;
 } finally {
   console.log("Draining tunnel and stopping the app.");
