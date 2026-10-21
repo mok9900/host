@@ -1,0 +1,26 @@
+name: Validate AsTeR host
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check JavaScript syntax
+        run: |
+          node --check scripts/core.mjs
+          node --check scripts/relay.mjs
+          node --check scripts/watchdog.mjs
+      - name: Run handover logic tests
+        run: node --test tests/*.test.mjs
