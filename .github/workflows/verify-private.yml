@@ -5,7 +5,7 @@ on:
     paths:
       - .github/workflows/verify-private.yml
   workflow_dispatch:
-  # Recheck profile UI after removing temporary privacy controls
+  # Recheck required service account fields and legacy account migration
 permissions:
   contents: read
 jobs:
