@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/verify-private.yml
   workflow_dispatch:
+  # Recheck required chat review controls and OWNER conversation console
 permissions:
   contents: read
 jobs:
