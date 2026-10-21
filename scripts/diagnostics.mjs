@@ -23,6 +23,19 @@ export function safeApplicationEvent(line) {
       return "request_failed stage=unknown type=unknown";
     }
   }
+  const providerMatch = /^provider_http_failure\\s+(\\{.{0,512}\\})$/.exec(value);
+  if (providerMatch) {
+    try {
+      const data = JSON.parse(providerMatch[1]);
+      const allowedModels = new Set(["mi-large", "mi-plus", "mi-ax", "atmig", "atmig-plus"]);
+      const model = allowedModels.has(data.model) ? data.model : "unknown";
+      const status = Number.isInteger(data.status) && data.status >= 400 && data.status <= 599
+        ? data.status : 0;
+      return `provider_http_failure model=${model} status=${status}`;
+    } catch {
+      return "provider_http_failure model=unknown status=0";
+    }
+  }
   if (/^chat_stream_failed(?:\s|$)/.test(value)) {
     return "chat_stream_failed details=withheld";
   }
