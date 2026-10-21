@@ -23,7 +23,7 @@ export function safeApplicationEvent(line) {
       return "request_failed stage=unknown type=unknown";
     }
   }
-  const providerMatch = /^provider_http_failure\\s+(\\{.{0,512}\\})$/.exec(value);
+  const providerMatch = /^provider_http_failure\s+(\{.{0,512}\})$/.exec(value);
   if (providerMatch) {
     try {
       const data = JSON.parse(providerMatch[1]);
