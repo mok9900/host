@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { safeApplicationEvent } from "./diagnostics.mjs";
 import { setTimeout as sleep } from "node:timers/promises";
 import {
   normalizeOrigin, validateGeneration, deploymentEnvironment,
@@ -69,6 +70,24 @@ async function waitUntilHealthy(url, child, timeoutMs, description) {
   throw new Error(description + " failed readiness.");
 }
 
+function attachSafeDiagnostics(child) {
+  let pending = "";
+  child.stderr?.setEncoding("utf8");
+  child.stderr?.on("data", chunk => {
+    pending += String(chunk);
+    if (pending.length > 8192) {
+      pending = "";
+      return;
+    }
+    let end;
+    while ((end = pending.indexOf("\\n")) >= 0) {
+      const line = pending.slice(0, end);
+      pending = pending.slice(end + 1);
+      const safe = safeApplicationEvent(line);
+      if (safe) console.error("[AsTeR app] " + safe);
+    }
+  });
+}
 function sanitizedEnv() {
   const result = {};
   for (const key of ["PATH", "HOME", "LANG", "TMPDIR"]) {
@@ -156,8 +175,9 @@ async function main() {
   app = spawn(process.execPath, ["--import", "tsx", "server/standalone.ts"], {
     cwd: "app",
     env: applicationEnv(),
-    stdio: "ignore",
+    stdio: ["ignore", "ignore", "pipe"],
   });
+  attachSafeDiagnostics(app);
   app.on("error", () => { stopping = true; });
   await waitUntilHealthy("http://127.0.0.1:8080/api/health", app, 120_000, "Node server");
   console.log("Application ready.");
