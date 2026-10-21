@@ -1,4 +1,5 @@
 name: Verify private AsTeR source
+# Recheck account migration build before selecting rolling source
 on:
   push:
     paths:
