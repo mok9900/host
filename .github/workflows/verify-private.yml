@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: mok9900/aster-ai
-          ref: feat/complete-profiles-owner-audit-20261021
+          ref: feat/aster-native-search-20261023
           token: ${{ secrets.PRIVATE_REPO_TOKEN }}
           persist-credentials: false
       - name: Set up Node
