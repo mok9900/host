@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "status": "online",
-  "endpoint": "https://budapest-nasa-foam-inventory.trycloudflare.com",
+  "status": "offline",
+  "endpoint": "",
   "runId": "39934034982",
-  "startedAt": 1792748738451,
-  "validUntil": 1792769738451,
-  "signature": "86bb5361ae4fc9f17618ce4b04fbfe0b4ed2576ca494994eab05127c8d39b52a"
+  "startedAt": 1792769720581,
+  "validUntil": 1792769720581,
+  "signature": "939de3a8a325bbb862584d89cc94f453a7f94f057a050df823595e1191e22fcc"
 }
