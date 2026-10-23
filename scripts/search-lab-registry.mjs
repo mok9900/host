@@ -81,8 +81,21 @@ async function publish(status, endpoint, runId) {
   await apiFetch("PUT",body);
   process.stdout.write("Search registry is "+status+" (run "+runId+").\n");
 }
+async function offlineCurrent() {
+  const old = await apiFetch("GET");
+  if (!old) return;
+  const record = JSON.parse(Buffer.from(old.content.replace(/\\s/g,""),"base64").toString());
+  const token=process.env.ASTER_TOOL_TOKEN;
+  if (!token || !verifyRegistry(record,token)) {
+    process.stdout.write("No valid active search session to disable.\\n");
+    return;
+  }
+  await publish("offline","",record.runId);
+}
 if (process.argv[1] && import.meta.url.endsWith("/"+process.argv[1].split("/").at(-1))) {
   const [status,endpoint]=process.argv.slice(2);
-  if(!["online","offline"].includes(status))throw new Error("Expected online/offline");
-  await publish(status,endpoint||"",process.env.GITHUB_RUN_ID);
+  if (status === "offline-current") await offlineCurrent();
+  else if (["online","offline"].includes(status))
+    await publish(status,endpoint||"",process.env.GITHUB_RUN_ID);
+  else throw new Error("Expected online/offline/offline-current");
 }
