@@ -60,6 +60,21 @@ jobs:
             -H 'Content-Type: application/json' --data '{"query":"test"}')
           [[ "$code" == "401" ]] || { echo "::error::Unauthenticated API must return 401, got $code"; exit 1; }
           echo "Dockerized search gateway is listening, health check OK, bearer authentication enforced."
+          # External search engines can independently limit requests; report
+          # the first real query but do not obscure upstream failures.
+          export ASTER_TOOL_TOKEN="$(sed -n 's/^ASTER_TOOL_TOKEN=//p' .env)"
+          response="$(curl --silent --show-error --max-time 18 \
+            -X POST http://127.0.0.1:8787/v1/search \
+            -H "Authorization: Bearer $ASTER_TOOL_TOKEN" \
+            -H 'Content-Type: application/json' \
+            --data '{"query":"Riemann hypothesis","limit":3}' \
+            --write-out '\n%{http_code}' || true)"
+          status="$(printf '%s\n' "$response" | tail -n 1)"
+          if [[ "$status" == "200" ]]; then
+            echo "Real SearXNG search: success (HTTP 200)"
+          else
+            echo "::warning::External metasearch upstream returned HTTP $status. Engine configuration or upstream search throttling may need inspection."
+          fi
 
   serve:
     # Only a user-initiated session serves requests. No job auto-renews.
