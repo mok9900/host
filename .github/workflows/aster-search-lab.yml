@@ -23,6 +23,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
+      - name: Check out public gateway registry tests
+        uses: actions/checkout@v4
+        with:
+          path: infra
+          persist-credentials: false
       - name: Check out private search engine
         uses: actions/checkout@v4
         with:
@@ -35,6 +40,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Test signed automatic service discovery
+        run: node --test infra/tests/search-lab-registry.test.mjs
       - name: Unit tests for search engine
         run: |
           cd app/search-engine
@@ -177,6 +184,7 @@ jobs:
           "$RUNNER_TEMP/cloudflared" tunnel --no-autoupdate --url http://127.0.0.1:8787 > "$tunnel_log" 2>&1 &
           tunnel_pid=$!
           registered=0
+          status=""
           cleanup() {
             trap - EXIT INT TERM
             if [[ "$registered" == "1" ]]; then
