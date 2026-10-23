@@ -1,0 +1,36 @@
+name: Verify AsTeR Native Search
+on:
+  push:
+    paths:
+      - .github/workflows/verify-native-search.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Check out private AsTeR search feature
+        uses: actions/checkout@v4
+        with:
+          repository: mok9900/aster-ai
+          ref: feat/aster-native-search-20261023
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Test independent search engine
+        run: |
+          cd search-engine
+          npm test
+      - name: Verify integrated AsTeR application
+        run: |
+          npm ci
+          npm test
+          npm run build
+      - name: Build search engine container
+        run: docker build --tag aster-native-search:test search-engine
