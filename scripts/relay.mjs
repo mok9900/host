@@ -105,7 +105,7 @@ function applicationEnv() {
     "ASTER_MODEL_MI_LARGE", "ASTER_MODEL_MI_PLUS", "ASTER_MODEL_MI_AX",
     "ASTER_MODEL_ATMIG", "ASTER_MODEL_ATMIG_PLUS",
     // Independent search gateway settings are opt-in server-only values.
-    "ASTER_SEARCH_URL", "ASTER_TOOL_TOKEN",
+    "ASTER_SEARCH_URL", "ASTER_SEARCH_DISCOVERY_URL", "ASTER_TOOL_TOKEN",
   ];
   for (const key of keys) if (env[key]) result[key] = env[key];
   return result;
