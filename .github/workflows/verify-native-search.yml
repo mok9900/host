@@ -1,4 +1,4 @@
-# Verify isolated gateway, authenticated source extraction, and AsTeR chat integration
+# Verify production-ready native search branch, intent routing, secure gateway and container
 name: Verify AsTeR Native Search
 on:
   push:
