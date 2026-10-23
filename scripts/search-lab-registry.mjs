@@ -84,10 +84,10 @@ async function publish(status, endpoint, runId) {
 async function offlineCurrent() {
   const old = await apiFetch("GET");
   if (!old) return;
-  const record = JSON.parse(Buffer.from(old.content.replace(/\\s/g,""),"base64").toString());
+  const record = JSON.parse(Buffer.from(old.content.replace(/\s/g,""),"base64").toString());
   const token=process.env.ASTER_TOOL_TOKEN;
   if (!token || !verifyRegistry(record,token)) {
-    process.stdout.write("No valid active search session to disable.\\n");
+    process.stdout.write("No valid active search session to disable.\n");
     return;
   }
   await publish("offline","",record.runId);
