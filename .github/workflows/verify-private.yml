@@ -1,5 +1,5 @@
 name: Verify private AsTeR source
-# Recheck Gemini search final integration, source display and continued-response cost cap
+# Recheck search entitlement error handling and automatic no-search recovery
 on:
   push:
     paths:
