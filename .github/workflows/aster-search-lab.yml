@@ -86,6 +86,8 @@ jobs:
                 console.log("Direct SearXNG failed:",e?.cause?.code || e?.name || "fetch-error");
               }
           NODE
+            docker compose --env-file .env ps
+            docker compose --env-file .env logs --no-color --tail 35 searxng
           fi
 
   serve:
