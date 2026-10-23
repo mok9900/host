@@ -1,4 +1,4 @@
-# Verify signed dynamic search discovery, native search integration and container startup
+# Verify final signed automatic search discovery and OWNER launch shortcut
 name: Verify AsTeR Native Search
 on:
   push:
