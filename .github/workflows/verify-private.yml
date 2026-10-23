@@ -1,5 +1,5 @@
 name: Verify private AsTeR source
-# Recheck search entitlement error handling and automatic no-search recovery
+# Recheck search provider graceful fallback, greeting routing, and TypeScript build
 on:
   push:
     paths:
