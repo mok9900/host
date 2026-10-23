@@ -1,4 +1,4 @@
-# Verify production-ready native search branch, intent routing, secure gateway and container
+# Verify signed dynamic search discovery, native search integration and container startup
 name: Verify AsTeR Native Search
 on:
   push:
