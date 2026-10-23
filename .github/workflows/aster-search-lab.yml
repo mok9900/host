@@ -85,7 +85,7 @@ jobs:
               } catch (e) {
                 console.log("Direct SearXNG failed:",e?.cause?.code || e?.name || "fetch-error");
               }
-NODE
+          NODE
           fi
 
   serve:
