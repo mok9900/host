@@ -42,6 +42,21 @@ jobs:
           node-version: '22'
       - name: Test signed automatic service discovery
         run: node --test infra/tests/search-lab-registry.test.mjs
+      - name: Bootstrap signed service registry automatically
+        shell: bash
+        env:
+          SOURCE_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # This bootstraps one *offline* registry, never replaces an active one.
+          if gh api "repos/$GITHUB_REPOSITORY/contents/runtime/search-registry.json" >/dev/null 2>&1; then
+            echo "Search registry exists; preserving its current session."
+          else
+            node infra/scripts/search-lab-identity.mjs
+            node infra/scripts/search-lab-registry.mjs offline ""
+          fi
+
       - name: Unit tests for search engine
         run: |
           cd app/search-engine
