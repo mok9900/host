@@ -43,6 +43,23 @@ jobs:
         run: |
           cd app/search-engine
           ASTER_TOOL_TOKEN=unit-test-placeholder ASTER_SEARXNG_SECRET=unit-test-placeholder docker compose config --quiet
+      - name: Container startup and authentication smoke test
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd app/search-engine
+          umask 077
+          printf 'ASTER_TOOL_TOKEN=%s\n' "$(openssl rand -hex 32)" > .env
+          printf 'ASTER_SEARXNG_SECRET=%s\n' "$(openssl rand -hex 32)" >> .env
+          trap 'docker compose --env-file .env down --remove-orphans >/dev/null 2>&1 || true; rm -f .env' EXIT
+          docker compose --env-file .env up --detach --build --wait --wait-timeout 120
+          curl --fail --silent --show-error --retry 8 --retry-delay 2 --retry-connrefused \
+            http://127.0.0.1:8787/healthz > /dev/null
+          code=$(curl --silent --output /dev/null --write-out '%{http_code}' --max-time 5 \
+            -X POST http://127.0.0.1:8787/v1/search \
+            -H 'Content-Type: application/json' --data '{"query":"test"}')
+          [[ "$code" == "401" ]] || { echo "::error::Unauthenticated API must return 401, got $code"; exit 1; }
+          echo "Dockerized search gateway is listening, health check OK, bearer authentication enforced."
 
   serve:
     # Only a user-initiated session serves requests. No job auto-renews.
