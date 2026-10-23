@@ -270,7 +270,7 @@ jobs:
           set -euo pipefail
           node scripts/search-lab-registry.mjs offline-current || true
           gh api --paginate "repos/$GITHUB_REPOSITORY/actions/workflows/aster-search-lab.yml/runs?status=in_progress&per_page=100" \
-            --jq '.workflow_runs[].id' | while read -r run_id; do
+            --jq '.workflow_runs[] | select(.event == "workflow_dispatch" and (.display_title | endswith("· start"))) | .id' | while read -r run_id; do
               [[ -z "$run_id" || "$run_id" == "$GITHUB_RUN_ID" ]] && continue
               gh api --method POST "repos/$GITHUB_REPOSITORY/actions/runs/$run_id/cancel" >/dev/null || true
               echo "Cancellation requested for search lab run $run_id"
