@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "status": "offline",
-  "endpoint": "",
-  "runId": "39934034982",
-  "startedAt": 1792769720581,
-  "validUntil": 1792769720581,
-  "signature": "939de3a8a325bbb862584d89cc94f453a7f94f057a050df823595e1191e22fcc"
+  "status": "online",
+  "endpoint": "https://recommend-flights-michael-subjective.trycloudflare.com",
+  "runId": "40063011672",
+  "startedAt": 1792816660101,
+  "validUntil": 1792837660101,
+  "signature": "6b94e3f0d1bde815dce384fb6c809ef9596fa38bb59a23e15211b64011f826c8"
 }
