@@ -1,4 +1,4 @@
-# Verify original logo, encrypted no-TTL security logs, owner audits, and native search
+# Verify AsTeR inline security notice removal, UI build and prior security logging tests
 name: Verify AsTeR Native Search
 on:
   push:
