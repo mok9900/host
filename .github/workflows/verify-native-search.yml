@@ -1,4 +1,4 @@
-# Verify original AsTeR logo and security-only durable access logging with owner controls
+# Verify original logo, encrypted no-TTL security logs, owner audits, and native search
 name: Verify AsTeR Native Search
 on:
   push:
