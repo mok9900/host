@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "status": "offline",
-  "endpoint": "",
-  "runId": "40157945908",
-  "startedAt": 1792919579813,
-  "validUntil": 1792919579813,
-  "signature": "42bf744142487e4c47fb226092206d93549877f3621d8aebdc1e6bfb4b828c92"
+  "status": "online",
+  "endpoint": "https://respond-rolls-scanners-attempt.trycloudflare.com",
+  "runId": "40483808618",
+  "startedAt": 1793094671378,
+  "validUntil": 1793115671378,
+  "signature": "78dff8416d29b532e3c8c70a6e21622b0abd697c46a2ae551850dea53997f8af"
 }
