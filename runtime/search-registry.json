@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "status": "online",
-  "endpoint": "https://residence-ripe-foods-bibliography.trycloudflare.com",
+  "status": "offline",
+  "endpoint": "",
   "runId": "40665093687",
-  "startedAt": 1793180042419,
-  "validUntil": 1793201042419,
-  "signature": "63cb4dbdc840cf6e429b67688fdb208fe61d5edbf89f51f410815d69317e2ca6"
+  "startedAt": 1793201025902,
+  "validUntil": 1793201025902,
+  "signature": "3bdbf31b7ddddd4f992850682a6baf3081e69ceb039e27453a4f3f4d15e0ff4b"
 }
