@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "status": "offline",
-  "endpoint": "",
-  "runId": "40665093687",
-  "startedAt": 1793201025902,
-  "validUntil": 1793201025902,
-  "signature": "3bdbf31b7ddddd4f992850682a6baf3081e69ceb039e27453a4f3f4d15e0ff4b"
+  "status": "online",
+  "endpoint": "https://vic-loan-mills-monster.trycloudflare.com",
+  "runId": "41194973941",
+  "startedAt": 1793444446124,
+  "validUntil": 1793465446124,
+  "signature": "e50fff2cfe2b97dfead8cbc0a5997e1fc017a5a1140e263496a69a7c46e7992c"
 }
