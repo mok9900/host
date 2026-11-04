@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "status": "online",
-  "endpoint": "https://contract-note-nutrition-volleyball.trycloudflare.com",
+  "status": "offline",
+  "endpoint": "",
   "runId": "41801799932",
-  "startedAt": 1793781920745,
-  "validUntil": 1793802920745,
-  "signature": "aa91216052cc4cb4bb56930587491aceff77a2d1304647406e0909e8963669af"
+  "startedAt": 1793802962877,
+  "validUntil": 1793802962877,
+  "signature": "53a46389d37d7626f9e835283189f8b6e665bcc133a03995b7c19e8aacb9cfec"
 }
