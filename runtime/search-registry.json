@@ -1,9 +1,9 @@
 {
   "version": 1,
   "status": "online",
-  "endpoint": "https://invite-plaintiff-extended-parent.trycloudflare.com",
-  "runId": "41605912402",
-  "startedAt": 1793695729746,
-  "validUntil": 1793716729746,
-  "signature": "531747b5d2fcfeeda291ec09dfe14514186b2d9e12f873d360a6725fc29bdd0b"
+  "endpoint": "https://contract-note-nutrition-volleyball.trycloudflare.com",
+  "runId": "41801799932",
+  "startedAt": 1793781920745,
+  "validUntil": 1793802920745,
+  "signature": "aa91216052cc4cb4bb56930587491aceff77a2d1304647406e0909e8963669af"
 }
