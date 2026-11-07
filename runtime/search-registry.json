@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "status": "online",
-  "endpoint": "https://excellent-mine-netscape-knives.trycloudflare.com",
+  "status": "offline",
+  "endpoint": "",
   "runId": "42360331423",
-  "startedAt": 1794044152104,
-  "validUntil": 1794065152104,
-  "signature": "10103beae1c342af5c067a881f072e9ce27f65f5ed4f9b995fc0f4ef9d78e365"
+  "startedAt": 1794065135408,
+  "validUntil": 1794065135408,
+  "signature": "abc46e9242478e4dac522d2db75120c85252e11fc04e87cea93c69c75aefc9b2"
 }
