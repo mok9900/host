@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "status": "offline",
-  "endpoint": "",
-  "runId": "42360331423",
-  "startedAt": 1794065135408,
-  "validUntil": 1794065135408,
-  "signature": "abc46e9242478e4dac522d2db75120c85252e11fc04e87cea93c69c75aefc9b2"
+  "status": "online",
+  "endpoint": "https://von-undertake-could-logistics.trycloudflare.com",
+  "runId": "42599058146",
+  "startedAt": 1794219165347,
+  "validUntil": 1794240165347,
+  "signature": "d131bc740932e18f2363361fe3636c841c57f0265ba34e5741c032e96bb238e4"
 }
